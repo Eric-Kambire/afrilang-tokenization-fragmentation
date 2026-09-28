@@ -1,0 +1,50 @@
+{
+  "500": {
+    "BPE": {
+      "tokens": 42935,
+      "words": 19896,
+      "fertility": 2.15797145154805,
+      "chars_per_token": 1.728449982531734,
+      "mean_tokens_per_sentence": 66.56589147286822
+    },
+    "Unigram": {
+      "tokens": 45488,
+      "words": 19896,
+      "fertility": 2.2862887012464816,
+      "chars_per_token": 1.6314412592332044,
+      "mean_tokens_per_sentence": 70.52403100775194
+    }
+  },
+  "1000": {
+    "BPE": {
+      "tokens": 35645,
+      "words": 19896,
+      "fertility": 1.7915661439485324,
+      "chars_per_token": 2.0819469771356434,
+      "mean_tokens_per_sentence": 55.263565891472865
+    },
+    "Unigram": {
+      "tokens": 36840,
+      "words": 19896,
+      "fertility": 1.8516284680337756,
+      "chars_per_token": 2.0144136807817588,
+      "mean_tokens_per_sentence": 57.116279069767444
+    }
+  },
+  "2000": {
+    "BPE": {
+      "tokens": 30986,
+      "words": 19896,
+      "fertility": 1.5573984720546843,
+      "chars_per_token": 2.3949848318595497,
+      "mean_tokens_per_sentence": 48.04031007751938
+    },
+    "Unigram": {
+      "tokens": 31651,
+      "words": 19896,
+      "fertility": 1.5908222758343387,
+      "chars_per_token": 2.344665255442166,
+      "mean_tokens_per_sentence": 49.071317829457364
+    }
+  }
+}

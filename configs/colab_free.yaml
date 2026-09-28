@@ -1,0 +1,31 @@
+mode: colab_free
+primary_experiment: A
+languages_initial: [bambara]
+languages_after_smoke: [bambara, yoruba]
+tokenizers: [bpe, unigram]
+optional_tokenizer: igt
+vocab_size: 2000
+data_budget_chars: 2000000
+seeds_smoke: [13]
+seeds_final: [13, 37, 73]
+model:
+  d_model: 256
+  n_heads: 4
+  n_layers: 4
+  d_ff: 1024
+  max_seq_len: 128
+  dropout: 0.1
+training:
+  batch_size: 16
+  gradient_accumulation: 2
+  max_steps_smoke: 100
+  max_steps_real: 2000
+  eval_every: 200
+  save_every: 200
+  mixed_precision: true
+  resume: true
+notes:
+  - Start with one language and two tokenizers.
+  - Add IGT only after BPE and Unigram are stable.
+  - Add a second language before increasing model size.
+  - Use three seeds only for the final selected conditions.

@@ -1,0 +1,798 @@
+{
+  "manifest_version": "1.0",
+  "created_utc": "2026-09-27T21:24:34.745499+00:00",
+  "study": {
+    "working_title": "Evaluating Frequency-Based Tokenization in Low-Resource African Languages",
+    "primary_question": "Does lower subword fragmentation necessarily imply better held-out language modeling performance under a fixed token-level training budget?",
+    "languages": [
+      "Yoruba",
+      "Luganda",
+      "Swahili"
+    ],
+    "dataset_source": "MasakhaNER CoNLL corpora reconstructed as whitespace-separated sentence text",
+    "primary_comparison": "SentencePiece BPE versus SentencePiece Unigram",
+    "primary_metric": "bits_per_character",
+    "secondary_metric": "bits_per_byte"
+  },
+  "protocol": {
+    "seeds": [
+      13,
+      37,
+      73
+    ],
+    "main_vocab_size": 1000,
+    "yoruba_vocab_ablation": [
+      500,
+      1000,
+      2000
+    ],
+    "training": {
+      "steps": 1000,
+      "sequence_length_tokens": 128,
+      "batch_size": 16,
+      "gradient_accumulation": 2,
+      "learning_rate": 0.0003,
+      "token_prediction_positions_per_run": 4096000,
+      "comparison_budget_description": "Same optimizer-step and token-position budget within each tokenizer comparison.",
+      "not_claimed": [
+        "identical number of epochs",
+        "identical character exposure",
+        "bitwise deterministic CUDA execution"
+      ]
+    },
+    "model": {
+      "type": "decoder-style causal Transformer implemented with TransformerEncoder causal masking",
+      "d_model": 256,
+      "n_heads": 4,
+      "n_layers": 4,
+      "d_ff": 1024,
+      "dropout": 0.1,
+      "weight_tying": "input token embedding tied to output projection"
+    },
+    "tokenization": {
+      "library": "SentencePiece",
+      "algorithms": [
+        "BPE",
+        "Unigram"
+      ],
+      "character_coverage": 1.0,
+      "normalizer": "nmt_nfkc"
+    },
+    "evaluation": {
+      "script": "src/evaluate_lm_v2.py",
+      "held_out_primary_metric": "BPC",
+      "held_out_secondary_metric": "BPB",
+      "validation_used_before_final_test": true
+    }
+  },
+  "datasets": {
+    "Yoruba": {
+      "train": {
+        "path": "data/yoruba_train.txt",
+        "bytes": 364084,
+        "characters": 259579,
+        "utf8_bytes": 364084,
+        "whitespace_tokens": 56274,
+        "lines": 2171,
+        "sha256": "03d17c2db0604b989254f0e4da5f00930a36861a117d05f3d6fa81e299405476"
+      },
+      "validation": {
+        "path": "data/yoruba_valid.txt",
+        "bytes": 44668,
+        "characters": 32005,
+        "utf8_bytes": 44668,
+        "whitespace_tokens": 7115,
+        "lines": 305,
+        "sha256": "499ef0ecb8fbddbbb382050f40d033f930b16a777e75a4e527bffab32078873c"
+      },
+      "test": {
+        "path": "data/yoruba_test.txt",
+        "bytes": 131081,
+        "characters": 94106,
+        "utf8_bytes": 131081,
+        "whitespace_tokens": 19896,
+        "lines": 645,
+        "sha256": "504af3d570a8c2f151537cfe54172c7bfc3383480421c418799f751bb8e840e3"
+      }
+    },
+    "Luganda": {
+      "train": {
+        "path": "data/luganda_train.txt",
+        "bytes": 227129,
+        "characters": 227129,
+        "utf8_bytes": 227129,
+        "whitespace_tokens": 33003,
+        "lines": 1428,
+        "sha256": "c3ae4784c9fd82c08a56f27041388dedc4d64cc60cfc8811b94c17adc1416ca1"
+      },
+      "validation": {
+        "path": "data/luganda_valid.txt",
+        "bytes": 25670,
+        "characters": 25670,
+        "utf8_bytes": 25670,
+        "whitespace_tokens": 3771,
+        "lines": 200,
+        "sha256": "bbba4481b83ea9e6c0a8ebf2acd90eb931ca7f6cff85db13119c4471dffd3054"
+      },
+      "test": {
+        "path": "data/luganda_test.txt",
+        "bytes": 68800,
+        "characters": 68800,
+        "utf8_bytes": 68800,
+        "whitespace_tokens": 9841,
+        "lines": 407,
+        "sha256": "4968b5e7cc344bb3f9d4a962da8931943df92486988d78a7525c271ed4b0cc8a"
+      }
+    },
+    "Swahili": {
+      "train": {
+        "path": "data/swahili_train.txt",
+        "bytes": 345880,
+        "characters": 344937,
+        "utf8_bytes": 345880,
+        "whitespace_tokens": 56599,
+        "lines": 2109,
+        "sha256": "562ecb7c9059e39fa26426e3173f0a28a7f59a2ea0f0163b7e5137a67f0ee846"
+      },
+      "validation": {
+        "path": "data/swahili_valid.txt",
+        "bytes": 44263,
+        "characters": 44187,
+        "utf8_bytes": 44263,
+        "whitespace_tokens": 7263,
+        "lines": 300,
+        "sha256": "fc58179ec8345e71876242be4481c8961db3ae8ce456c7773149c84e0da8a9e1"
+      },
+      "test": {
+        "path": "data/swahili_test.txt",
+        "bytes": 93642,
+        "characters": 93344,
+        "utf8_bytes": 93642,
+        "whitespace_tokens": 15409,
+        "lines": 604,
+        "sha256": "11be363d4c3925123eb8a4aef3212560b838ce5cc10a73dcfb24044009a3cedd"
+      }
+    }
+  },
+  "results": {
+    "cross_language_vocab1000_test": {
+      "Yoruba": {
+        "BPE": {
+          "BPC_mean": 3.25769024817706,
+          "BPC_std": 0.010573613434299732,
+          "BPB_mean": 2.3387691465197125,
+          "BPB_std": 0.007591035053502842
+        },
+        "Unigram": {
+          "BPC_mean": 3.0820147204527886,
+          "BPC_std": 0.015609862924417418,
+          "BPB_mean": 2.2126477314250743,
+          "BPB_std": 0.0112066719079442
+        },
+        "Unigram_relative_BPC_reduction_pct": 5.392640623907568
+      },
+      "Luganda": {
+        "BPE": {
+          "BPC_mean": 2.8548666469781474,
+          "BPC_std": 0.0077430242819246965,
+          "BPB_mean": 2.8548666469781474,
+          "BPB_std": 0.0077430242819246965
+        },
+        "Unigram": {
+          "BPC_mean": 2.723794229203451,
+          "BPC_std": 0.006199000036639546,
+          "BPB_mean": 2.723794229203451,
+          "BPB_std": 0.006199000036639546
+        },
+        "Unigram_relative_BPC_reduction_pct": 4.591
+      },
+      "Swahili": {
+        "BPE": {
+          "BPC_mean": 2.6821459780076036,
+          "BPC_std": 0.0070359718655812475,
+          "BPB_mean": 2.673610497118192,
+          "BPB_std": 0.007013581062138997
+        },
+        "Unigram": {
+          "BPC_mean": 2.4759443086756705,
+          "BPC_std": 0.003076714494079906,
+          "BPB_mean": 2.468065030104246,
+          "BPB_std": 0.0030669233648938257
+        },
+        "Unigram_relative_BPC_reduction_pct": 7.688
+      }
+    },
+    "yoruba_vocab_ablation_test": {
+      "500": {
+        "BPE": {
+          "BPC_values": [
+            3.218407571228484,
+            3.202540560942198,
+            3.178877067054618
+          ],
+          "BPC_mean": 3.1999417330751,
+          "BPC_std": 0.019892979157786265
+        },
+        "Unigram": {
+          "BPC_values": [
+            3.166472437855965,
+            3.166196790512191,
+            3.146112007386957
+          ],
+          "BPC_mean": 3.1595937452517044,
+          "BPC_std": 0.011676340918920461
+        },
+        "Unigram_relative_BPC_reduction_pct": 1.2608975784262733
+      },
+      "1000": {
+        "BPE": {
+          "BPC_values": [
+            3.2696718642329863,
+            3.249666718187224,
+            3.25373216211097
+          ],
+          "BPC_mean": 3.25769024817706,
+          "BPC_std": 0.010573613434299732
+        },
+        "Unigram": {
+          "BPC_values": [
+            3.0684656420286966,
+            3.078494373754226,
+            3.0990841455754436
+          ],
+          "BPC_mean": 3.0820147204527886,
+          "BPC_std": 0.015609862924417418
+        },
+        "Unigram_relative_BPC_reduction_pct": 5.392640623907568
+      },
+      "2000": {
+        "BPE": {
+          "BPC_values": [
+            3.125415278695126,
+            3.1324359714355454,
+            3.1347734757930743
+          ],
+          "BPC_mean": 3.1308749086412484,
+          "BPC_std": 0.004870487759641313
+        },
+        "Unigram": {
+          "BPC_values": [
+            3.0140064681281253,
+            3.005708875716761,
+            2.994213621036874
+          ],
+          "BPC_mean": 3.00464298829392,
+          "BPC_std": 0.009939380563850063
+        },
+        "Unigram_relative_BPC_reduction_pct": 4.031841706576231
+      }
+    },
+    "yoruba_intrinsic_test": {
+      "500": {
+        "BPE": {
+          "fertility": 2.15797145154805,
+          "chars_per_token": 1.728449982531734,
+          "test_tokens": 42935
+        },
+        "Unigram": {
+          "fertility": 2.2862887012464816,
+          "chars_per_token": 1.6314412592332044,
+          "test_tokens": 45488
+        }
+      },
+      "1000": {
+        "BPE": {
+          "fertility": 1.7915661439485324,
+          "chars_per_token": 2.0819469771356434,
+          "test_tokens": 35645
+        },
+        "Unigram": {
+          "fertility": 1.8516284680337756,
+          "chars_per_token": 2.0144136807817588,
+          "test_tokens": 36840
+        }
+      },
+      "2000": {
+        "BPE": {
+          "fertility": 1.5573984720546843,
+          "chars_per_token": 2.3949848318595497,
+          "test_tokens": 30986
+        },
+        "Unigram": {
+          "fertility": 1.5908222758343387,
+          "chars_per_token": 2.344665255442166,
+          "test_tokens": 31651
+        }
+      }
+    },
+    "training_token_exposure": {
+      "yoruba_v500": {
+        "BPE": 115684,
+        "Unigram": 116930,
+        "Unigram_vs_BPE_pct": 1.0770720237889422
+      },
+      "yoruba_v1000": {
+        "BPE": 92303,
+        "Unigram": 89523,
+        "Unigram_vs_BPE_pct": -3.011819767504848
+      },
+      "yoruba_v2000": {
+        "BPE": 76599,
+        "Unigram": 73195,
+        "Unigram_vs_BPE_pct": -4.443922244415723
+      },
+      "luganda_v1000": {
+        "BPE": 74048,
+        "Unigram": 74557,
+        "Unigram_vs_BPE_pct": 0.6873919619706136
+      },
+      "swahili_v1000": {
+        "BPE": 107445,
+        "Unigram": 104913,
+        "Unigram_vs_BPE_pct": -2.356554516264135
+      }
+    },
+    "source_summary_files": {
+      "three_language_summary": {
+        "experiment": "BPE_vs_Unigram_three_languages",
+        "vocab_size": 1000,
+        "training_steps": 1000,
+        "seeds": [
+          13,
+          37,
+          73
+        ],
+        "Yoruba": {
+          "BPE_test_BPC_mean": 3.25769024817706,
+          "BPE_test_BPC_std": 0.010573613434299732,
+          "Unigram_test_BPC_mean": 3.0820147204527886,
+          "Unigram_test_BPC_std": 0.015609862924417418,
+          "relative_BPC_reduction_pct": 5.39
+        },
+        "Luganda": {
+          "BPE_test_BPC_mean": 2.8548666469781474,
+          "BPE_test_BPC_std": 0.0077430242819246965,
+          "Unigram_test_BPC_mean": 2.723794229203451,
+          "Unigram_test_BPC_std": 0.006199000036639546,
+          "relative_BPC_reduction_pct": 4.59
+        },
+        "Swahili": {
+          "BPE_test_BPC_mean": 2.6821459780076036,
+          "BPE_test_BPC_std": 0.0070359718655812475,
+          "Unigram_test_BPC_mean": 2.4759443086756705,
+          "Unigram_test_BPC_std": 0.003076714494079906,
+          "relative_BPC_reduction_pct": 7.69
+        }
+      },
+      "yoruba_vocab_validation": {
+        "500": {
+          "BPE": {
+            "BPC_values": [
+              3.0252805901669757,
+              3.0403899073436182,
+              3.0113436757711485
+            ],
+            "BPC_mean": 3.025671391093914,
+            "BPC_std": 0.01452705875818491
+          },
+          "Unigram": {
+            "BPC_values": [
+              3.0222276211686254,
+              3.025541558516788,
+              2.996108405798388
+            ],
+            "BPC_mean": 3.014625861827934,
+            "BPC_std": 0.016121962614443194
+          },
+          "Unigram_relative_BPC_reduction_pct": 0.3650604390976734
+        },
+        "1000": {
+          "BPE": {
+            "BPC_values": [
+              3.0600893599110117,
+              3.051926905037259,
+              3.059073943130343
+            ],
+            "BPC_mean": 3.057030069359538,
+            "BPC_std": 0.004448537106145316
+          },
+          "Unigram": {
+            "BPC_values": [
+              2.884590396595385,
+              2.9027825177865116,
+              2.8977741652973656
+            ],
+            "BPC_mean": 2.895049026559754,
+            "BPC_std": 0.0093972391803434
+          },
+          "Unigram_relative_BPC_reduction_pct": 5.298640809042466
+        },
+        "2000": {
+          "BPE": {
+            "BPC_values": [
+              2.9275478895121845,
+              2.9452870131404696,
+              2.9422333370599403
+            ],
+            "BPC_mean": 2.938356079904198,
+            "BPC_std": 0.009483879431103664
+          },
+          "Unigram": {
+            "BPC_values": [
+              2.8377839486104923,
+              2.8301862295428726,
+              2.826208038354945
+            ],
+            "BPC_mean": 2.831392738836103,
+            "BPC_std": 0.005881511121056508
+          },
+          "Unigram_relative_BPC_reduction_pct": 3.6402443461373286
+        }
+      },
+      "yoruba_vocab_test": {
+        "language": "Yoruba",
+        "split": "test",
+        "seeds": [
+          13,
+          37,
+          73
+        ],
+        "training_steps": 1000,
+        "vocab_sizes": {
+          "500": {
+            "BPE": {
+              "BPC_values": [
+                3.218407571228484,
+                3.202540560942198,
+                3.178877067054618
+              ],
+              "BPC_mean": 3.1999417330751,
+              "BPC_std": 0.019892979157786265,
+              "BPB_values": [
+                2.310567228645095,
+                2.2991759448587246,
+                2.2821873900278598
+              ],
+              "BPB_mean": 2.297310187843893,
+              "BPB_std": 0.014281617447399836
+            },
+            "Unigram": {
+              "BPC_values": [
+                3.166472437855965,
+                3.166196790512191,
+                3.146112007386957
+              ],
+              "BPC_mean": 3.1595937452517044,
+              "BPC_std": 0.011676340918920461,
+              "BPB_values": [
+                2.2732818275484123,
+                2.273083934116617,
+                2.2586646162842587
+              ],
+              "BPB_mean": 2.2683434593164296,
+              "BPB_std": 0.00838270793262153
+            },
+            "Unigram_relative_BPC_reduction_pct": 1.2608975784262733
+          },
+          "1000": {
+            "BPE": {
+              "BPC_values": [
+                3.2696718642329863,
+                3.249666718187224,
+                3.25373216211097
+              ],
+              "BPC_mean": 3.25769024817706,
+              "BPC_std": 0.010573613434299732,
+              "BPB_values": [
+                2.3473710183436913,
+                2.333008873762993,
+                2.3359275474524526
+              ],
+              "BPB_mean": 2.3387691465197125,
+              "BPB_std": 0.007591035053502842
+            },
+            "Unigram": {
+              "BPC_values": [
+                3.0684656420286966,
+                3.078494373754226,
+                3.0990841455754436
+              ],
+              "BPC_mean": 3.0820147204527886,
+              "BPC_std": 0.015609862924417418,
+              "BPB_values": [
+                2.2029205430897885,
+                2.210120395301494,
+                2.22490225588394
+              ],
+              "BPB_mean": 2.2126477314250743,
+              "BPB_std": 0.0112066719079442
+            },
+            "Unigram_relative_BPC_reduction_pct": 5.392640623907568
+          },
+          "2000": {
+            "BPE": {
+              "BPC_values": [
+                3.125415278695126,
+                3.1324359714355454,
+                3.1347734757930743
+              ],
+              "BPC_mean": 3.1308749086412484,
+              "BPC_std": 0.004870487759641313,
+              "BPB_values": [
+                2.2438059689572363,
+                2.248846282282813,
+                2.250524429268796
+              ],
+              "BPB_mean": 2.247725560169615,
+              "BPB_std": 0.0034966327775102454
+            },
+            "Unigram": {
+              "BPC_values": [
+                3.0140064681281253,
+                3.005708875716761,
+                2.994213621036874
+              ],
+              "BPC_mean": 3.00464298829392,
+              "BPC_std": 0.009939380563850063,
+              "BPB_values": [
+                2.163823076492134,
+                2.157866048154969,
+                2.1496133461088647
+              ],
+              "BPB_mean": 2.1571008235853224,
+              "BPB_std": 0.007135705001805603
+            },
+            "Unigram_relative_BPC_reduction_pct": 4.031841706576231
+          }
+        }
+      },
+      "yoruba_intrinsic": {
+        "500": {
+          "BPE": {
+            "tokens": 42935,
+            "words": 19896,
+            "fertility": 2.15797145154805,
+            "chars_per_token": 1.728449982531734,
+            "mean_tokens_per_sentence": 66.56589147286822
+          },
+          "Unigram": {
+            "tokens": 45488,
+            "words": 19896,
+            "fertility": 2.2862887012464816,
+            "chars_per_token": 1.6314412592332044,
+            "mean_tokens_per_sentence": 70.52403100775194
+          }
+        },
+        "1000": {
+          "BPE": {
+            "tokens": 35645,
+            "words": 19896,
+            "fertility": 1.7915661439485324,
+            "chars_per_token": 2.0819469771356434,
+            "mean_tokens_per_sentence": 55.263565891472865
+          },
+          "Unigram": {
+            "tokens": 36840,
+            "words": 19896,
+            "fertility": 1.8516284680337756,
+            "chars_per_token": 2.0144136807817588,
+            "mean_tokens_per_sentence": 57.116279069767444
+          }
+        },
+        "2000": {
+          "BPE": {
+            "tokens": 30986,
+            "words": 19896,
+            "fertility": 1.5573984720546843,
+            "chars_per_token": 2.3949848318595497,
+            "mean_tokens_per_sentence": 48.04031007751938
+          },
+          "Unigram": {
+            "tokens": 31651,
+            "words": 19896,
+            "fertility": 1.5908222758343387,
+            "chars_per_token": 2.344665255442166,
+            "mean_tokens_per_sentence": 49.071317829457364
+          }
+        }
+      },
+      "training_exposure": {
+        "yoruba_v500": {
+          "characters": 259579,
+          "bytes": 364084,
+          "words": 56274,
+          "BPE": {
+            "train_tokens": 115684,
+            "chars_per_token": 2.243862591196708,
+            "bytes_per_token": 3.1472286573769925
+          },
+          "Unigram": {
+            "train_tokens": 116930,
+            "chars_per_token": 2.2199521080988625,
+            "bytes_per_token": 3.113691952450184
+          },
+          "unigram_vs_bpe_token_count_pct": 1.0770720237889422
+        },
+        "yoruba_v1000": {
+          "characters": 259579,
+          "bytes": 364084,
+          "words": 56274,
+          "BPE": {
+            "train_tokens": 92303,
+            "chars_per_token": 2.8122487893134567,
+            "bytes_per_token": 3.9444438425619968
+          },
+          "Unigram": {
+            "train_tokens": 89523,
+            "chars_per_token": 2.8995788791707158,
+            "bytes_per_token": 4.066932520134491
+          },
+          "unigram_vs_bpe_token_count_pct": -3.011819767504848
+        },
+        "yoruba_v2000": {
+          "characters": 259579,
+          "bytes": 364084,
+          "words": 56274,
+          "BPE": {
+            "train_tokens": 76599,
+            "chars_per_token": 3.388804031384222,
+            "bytes_per_token": 4.753116881421429
+          },
+          "Unigram": {
+            "train_tokens": 73195,
+            "chars_per_token": 3.546403442858119,
+            "bytes_per_token": 4.974164901974179
+          },
+          "unigram_vs_bpe_token_count_pct": -4.443922244415723
+        },
+        "luganda_v1000": {
+          "characters": 227129,
+          "bytes": 227129,
+          "words": 33003,
+          "BPE": {
+            "train_tokens": 74048,
+            "chars_per_token": 3.0673211970613656,
+            "bytes_per_token": 3.0673211970613656
+          },
+          "Unigram": {
+            "train_tokens": 74557,
+            "chars_per_token": 3.046380621537884,
+            "bytes_per_token": 3.046380621537884
+          },
+          "unigram_vs_bpe_token_count_pct": 0.6873919619706136
+        },
+        "swahili_v1000": {
+          "characters": 344937,
+          "bytes": 345880,
+          "words": 56599,
+          "BPE": {
+            "train_tokens": 107445,
+            "chars_per_token": 3.2103587882172273,
+            "bytes_per_token": 3.2191353715854625
+          },
+          "Unigram": {
+            "train_tokens": 104913,
+            "chars_per_token": 3.287838494752795,
+            "bytes_per_token": 3.2968268946651036
+          },
+          "unigram_vs_bpe_token_count_pct": -2.356554516264135
+        }
+      }
+    }
+  },
+  "interpretation": {
+    "supported_observation": "Across Yoruba, Luganda, and Swahili at vocabulary size 1000, Unigram obtained lower held-out BPC than BPE across all three model-training seeds.",
+    "yoruba_ablation_observation": "In Yoruba, the magnitude of the BPE-Unigram BPC difference varied substantially with vocabulary size.",
+    "fragmentation_observation": "In the Yoruba test-set intrinsic analysis, BPE had lower fertility than Unigram at vocabulary sizes 500, 1000, and 2000, despite Unigram obtaining lower test BPC.",
+    "main_conservative_claim": "Lower tokenization fertility does not necessarily imply lower held-out bits-per-character under this controlled experimental setup.",
+    "limitations": [
+      "Only three languages are studied.",
+      "All three corpora originate from the MasakhaNER domain and reconstruction procedure.",
+      "Three model-training seeds provide limited uncertainty estimation.",
+      "Tokenizer training itself is not independently replicated across tokenizer-training seeds.",
+      "Training fixes token-level prediction positions rather than character exposure or number of corpus epochs.",
+      "Vocabulary-size comparisons change embedding/output parameter count across vocabulary sizes.",
+      "CoNLL reconstruction inserts whitespace around punctuation and therefore is not identical to original natural orthographic text.",
+      "Results concern small Transformer language models and should not be assumed to transfer automatically to large pretrained models or downstream tasks."
+    ]
+  },
+  "unicode_notes": {
+    "sentencepiece_normalizer": "nmt_nfkc",
+    "yoruba_validation_original_equals_NFC": true,
+    "yoruba_validation_original_equals_NFKC": false,
+    "observed_NFKC_changes": {
+      "horizontal_ellipsis_U+2026": {
+        "replacement": "...",
+        "count": 5
+      },
+      "double_prime_U+2033": {
+        "replacement": "two prime characters",
+        "count": 2
+      }
+    },
+    "observed_yoruba_letters_or_diacritics_changed": false
+  },
+  "environment": {
+    "python": "3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]",
+    "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+    "torch": "2.11.0+cu128",
+    "cuda_available": true,
+    "cuda_device": "Tesla T4",
+    "sentencepiece": "0.2.2",
+    "numpy": "2.1.3",
+    "git_commit": null
+  },
+  "reproducibility": {
+    "code_hashes": {
+      "src/train_tokenizers.py": {
+        "sha256": "31ca9994efbaff26ace7df6117c298080f792d17d7ed5dddc000f11bf895df32",
+        "bytes": 977
+      },
+      "src/train_tiny_lm.py": {
+        "sha256": "9d48c67fafdd800c5dbd49a61ac7aeea261e260908db77ffa0b1ad44a6cbe0c5",
+        "bytes": 4741
+      },
+      "src/evaluate_lm_v2.py": {
+        "sha256": "9db2ce8a5461acaa72980ca2879b121a4da78cb4023b1eaa28b6b4e1976f9716",
+        "bytes": 3518
+      }
+    },
+    "tokenizer_model_hashes": {
+      "artifacts/yoruba_tokenizers/bpe.model": {
+        "exists": true,
+        "sha256": "b7655787a6c6e19284ea12677bfce4e496bdbff1abae70ac3a83926d47aa2de2",
+        "bytes": 254755
+      },
+      "artifacts/yoruba_tokenizers/unigram.model": {
+        "exists": true,
+        "sha256": "ccfcfe81f9527ec76140b54d9f9b9988843c9de404f52efd4bb43fe11f4853ba",
+        "bytes": 257248
+      },
+      "artifacts/yoruba_tokenizers_v500/bpe.model": {
+        "exists": true,
+        "sha256": "25701a5fb0026ba4c63133b66c9b1404ff28510253cc1c47ecedda5c1322f7ef",
+        "bytes": 246744
+      },
+      "artifacts/yoruba_tokenizers_v500/unigram.model": {
+        "exists": true,
+        "sha256": "ba62d2e8ab55a227590f625777abd34ed14f640c98285f514e35ed8c50dba8bd",
+        "bytes": 247782
+      },
+      "artifacts/yoruba_tokenizers_v2000/bpe.model": {
+        "exists": true,
+        "sha256": "142d2b245cfee9d008215faf9c36b22b89398cdcc3e50bb697536b49e72fb905",
+        "bytes": 271715
+      },
+      "artifacts/yoruba_tokenizers_v2000/unigram.model": {
+        "exists": true,
+        "sha256": "1718819de8dbe657be22e4b76caab9d5b7ec3fa00be561c4ef048ca81e4c169c",
+        "bytes": 276862
+      },
+      "artifacts/luganda_tokenizers/bpe.model": {
+        "exists": true,
+        "sha256": "32ea26c26b5ecd4e4ef73efebb0bb591b0c39402cafe719c7db16e73a6d5713d",
+        "bytes": 253785
+      },
+      "artifacts/luganda_tokenizers/unigram.model": {
+        "exists": true,
+        "sha256": "85f5c63ee72a935160a8f63da6a9844063fee8260fa676d6c6f1af34da2c617a",
+        "bytes": 255704
+      },
+      "artifacts/swahili_tokenizers/bpe.model": {
+        "exists": true,
+        "sha256": "219e463caa7e0a02e70c19a9a8f0d322c817f19343afe4acc73e986281b928bf",
+        "bytes": 254093
+      },
+      "artifacts/swahili_tokenizers/unigram.model": {
+        "exists": true,
+        "sha256": "b212e7a9b1b2f861093a1c8c00ecb620ddd81567151f42ab60265c6e58043833",
+        "bytes": 256076
+      }
+    },
+    "rng_notes": [
+      "Python random.seed and torch.manual_seed are set for each model-training seed.",
+      "CUDA deterministic algorithms are not explicitly forced.",
+      "Resume checkpoints store model, optimizer, step and arguments, but not complete RNG/DataLoader/scaler state."
+    ]
+  }
+}

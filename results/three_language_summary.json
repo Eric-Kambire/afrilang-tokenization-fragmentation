@@ -1,0 +1,31 @@
+{
+  "experiment": "BPE_vs_Unigram_three_languages",
+  "vocab_size": 1000,
+  "training_steps": 1000,
+  "seeds": [
+    13,
+    37,
+    73
+  ],
+  "Yoruba": {
+    "BPE_test_BPC_mean": 3.25769024817706,
+    "BPE_test_BPC_std": 0.010573613434299732,
+    "Unigram_test_BPC_mean": 3.0820147204527886,
+    "Unigram_test_BPC_std": 0.015609862924417418,
+    "relative_BPC_reduction_pct": 5.39
+  },
+  "Luganda": {
+    "BPE_test_BPC_mean": 2.8548666469781474,
+    "BPE_test_BPC_std": 0.0077430242819246965,
+    "Unigram_test_BPC_mean": 2.723794229203451,
+    "Unigram_test_BPC_std": 0.006199000036639546,
+    "relative_BPC_reduction_pct": 4.59
+  },
+  "Swahili": {
+    "BPE_test_BPC_mean": 2.6821459780076036,
+    "BPE_test_BPC_std": 0.0070359718655812475,
+    "Unigram_test_BPC_mean": 2.4759443086756705,
+    "Unigram_test_BPC_std": 0.003076714494079906,
+    "relative_BPC_reduction_pct": 7.69
+  }
+}

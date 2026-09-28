@@ -1,0 +1,82 @@
+{
+  "yoruba_v500": {
+    "characters": 259579,
+    "bytes": 364084,
+    "words": 56274,
+    "BPE": {
+      "train_tokens": 115684,
+      "chars_per_token": 2.243862591196708,
+      "bytes_per_token": 3.1472286573769925
+    },
+    "Unigram": {
+      "train_tokens": 116930,
+      "chars_per_token": 2.2199521080988625,
+      "bytes_per_token": 3.113691952450184
+    },
+    "unigram_vs_bpe_token_count_pct": 1.0770720237889422
+  },
+  "yoruba_v1000": {
+    "characters": 259579,
+    "bytes": 364084,
+    "words": 56274,
+    "BPE": {
+      "train_tokens": 92303,
+      "chars_per_token": 2.8122487893134567,
+      "bytes_per_token": 3.9444438425619968
+    },
+    "Unigram": {
+      "train_tokens": 89523,
+      "chars_per_token": 2.8995788791707158,
+      "bytes_per_token": 4.066932520134491
+    },
+    "unigram_vs_bpe_token_count_pct": -3.011819767504848
+  },
+  "yoruba_v2000": {
+    "characters": 259579,
+    "bytes": 364084,
+    "words": 56274,
+    "BPE": {
+      "train_tokens": 76599,
+      "chars_per_token": 3.388804031384222,
+      "bytes_per_token": 4.753116881421429
+    },
+    "Unigram": {
+      "train_tokens": 73195,
+      "chars_per_token": 3.546403442858119,
+      "bytes_per_token": 4.974164901974179
+    },
+    "unigram_vs_bpe_token_count_pct": -4.443922244415723
+  },
+  "luganda_v1000": {
+    "characters": 227129,
+    "bytes": 227129,
+    "words": 33003,
+    "BPE": {
+      "train_tokens": 74048,
+      "chars_per_token": 3.0673211970613656,
+      "bytes_per_token": 3.0673211970613656
+    },
+    "Unigram": {
+      "train_tokens": 74557,
+      "chars_per_token": 3.046380621537884,
+      "bytes_per_token": 3.046380621537884
+    },
+    "unigram_vs_bpe_token_count_pct": 0.6873919619706136
+  },
+  "swahili_v1000": {
+    "characters": 344937,
+    "bytes": 345880,
+    "words": 56599,
+    "BPE": {
+      "train_tokens": 107445,
+      "chars_per_token": 3.2103587882172273,
+      "bytes_per_token": 3.2191353715854625
+    },
+    "Unigram": {
+      "train_tokens": 104913,
+      "chars_per_token": 3.287838494752795,
+      "bytes_per_token": 3.2968268946651036
+    },
+    "unigram_vs_bpe_token_count_pct": -2.356554516264135
+  }
+}
